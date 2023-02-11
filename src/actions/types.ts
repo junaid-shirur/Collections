@@ -16,10 +16,11 @@ export type UserAccount = UserAuth & UserId & {
 }
 
 export type Images = UserId & {
-    uid: string
+    _id: string
     thumbnail: string
     url: string
     description: string
     name: string
     createdAt: number
+    favourite?: string
 }

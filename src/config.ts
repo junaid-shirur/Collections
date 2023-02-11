@@ -14,6 +14,7 @@ export type Paginated = {
 }
 export type ReaderRoutes = {
     discover: Route
+    favourites: Route
 }
 
 export type AuthRoutes = {
@@ -29,13 +30,14 @@ export const reader: ReaderConfig = {
     pageBuffer: 3,
     routes: {
         discover: "/home",
+        favourites: "/favourites"
     }
 }
 
 export const auth: AuthConfig = {
     routes: {
         login: '/login',
-        register: '/register'
+        register: '/register',
     }
 }
 export const Axios = axios.create({

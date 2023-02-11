@@ -20,7 +20,7 @@ import ProtectedRoute from './components/protectedRoute';
 import { HTTPMethods } from './remote/types';
 import Home from './screens/Home';
 function App(props: any) {
-  const { discover } = Config.reader.routes
+  const { discover, favourites } = Config.reader.routes
   const { login, register } = Config.auth.routes
   console.log(useLocation().pathname);
 
@@ -32,8 +32,6 @@ function App(props: any) {
   //   })
   //   console.log(ab().then(e => console.log(e.json())))
   // }, [])
-  const [selectedDelete, setSelectedDelete] = useState([]);
-  const [selectAll, setselectAll] = useState(false);
 
   return (
     <>
@@ -43,6 +41,7 @@ function App(props: any) {
           <Route path={login} element={<Login  />} />
           <Route path={register} element={<Login />} />
           <Route path={discover} element={<Home />} />
+          <Route path={favourites} element={<Home />} />
         </Routes>
       </ProtectedRoute>
     </>

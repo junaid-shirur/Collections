@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
 import { Action } from '../actions/common'
@@ -25,13 +25,13 @@ const initialState: State = {
 
 export const Images = createSlice({
   name: 'images',
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
     deleteImage: (state, action) => {
+      const updatedState = state.Images.filter(img => !(action.payload[img._id] && action.payload[img._id]))
       return {
         ...state,
-        Images: action.payload
+        Images: [...updatedState]
       }
     },
     filter: (state, action) => {
@@ -47,10 +47,11 @@ export const Images = createSlice({
     getImages: (state, action: PayloadAction<Array<Img>>) => {
       return {
         ...state,
-        Images: action.payload
+        Images: action.payload,
+        favourites: action.payload.filter(img => img.favourite)
       }
     }
-  },
+  }
 })
 
 

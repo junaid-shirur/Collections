@@ -28,3 +28,9 @@ export const signIn: (val: UserAuth) => any = async (val) => {
         password: 'password'
     }).then(e => e)
 }
+
+export const fetchImages = async () => await Axios.get('/images').then(res => res.data)
+
+export const deleteImages = async (imgIds: Array<string>) => await Axios.delete('/images/delete', { data: imgIds })
+
+export const updateFavourite = async (imgIds: Array<string>, add: boolean) => await Axios.post('/images/fav', { imgIds: imgIds, add: add })

@@ -11,15 +11,29 @@ export const SearchBar = styled.div`
     background-color: white;
     align-items: center;
     label{
+        display: flex;
+        align-items: center;
+        gap: 5px;
         button{
-            background-color: white;
-            border: none;
-            
-        }
+        margin-right:3px;
+        border: none;
+        background-color: white;
+        color: black;
+        margin-top: 3px;
+        border-radius: 5px;
+        &:hover{
+            background-color: aliceblue;
+        };
+        &:disabled {
+         backgroundColor: "red";
+         border: none
+        };
+    }
     }
     input{
         border: 1px lightgray solid;
         border-radius: 5px;
+        cursor: pointer;
     }
 
 `

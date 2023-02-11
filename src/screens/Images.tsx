@@ -1,29 +1,37 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { Flex } from 'rebass'
-import { useAppSelector } from '../reducers/hooks'
 import { Images as Img } from '../actions/types'
+import { Spinner } from 'react-bootstrap'
 
 
-const Images: React.FC<any> = ({ selectedDelete, setSelectedDelete, selectAll }) => {
-  const state = useAppSelector(state => state.images.Images)
-  console.log(state)
+const Images: React.FC<any> = ({ selectedDelete, setSelectedDelete, images, isLoading }) => {
+  if (isLoading) {
+    return (
+      <Container>
+        <Spinner />
+      </Container>
+    )
+  }
   return (
     <>
       <Container>
-        {state.length && state.map((img: Img) => (
-          <Wrapper>
+        {images.length && images.map((img: Img) => (
+          <Wrapper key={img._id}>
             <Checkbox
               type="checkbox"
-              id={img.uid}
-              checked={(selectedDelete[img.uid] && selectedDelete[img.uid].isChecked) || selectAll}
-              onChange={(e: any) => { setSelectedDelete({ ...selectedDelete, [img.uid]: { isChecked: e.target.checked } }) }}
+              id={img._id}
+              checked={ selectedDelete[img._id] && selectedDelete[img._id] ? true : false}
+              onChange={(e: any) => {
+                e.preventDefault()
+                setSelectedDelete({ ...selectedDelete, [img._id]: !selectedDelete?.[img._id] ? img._id : null })
+              }}
             />
             <ImgWraper href={img.url} download>
               <Image src={img.thumbnail} alt={img.description} />
               <Description>
                 <span>{img.name}</span>
-                <p>{img.createdAt}</p>
+                <p>{new Date(img.createdAt).toLocaleDateString()}</p>
               </Description>
             </ImgWraper>
           </Wrapper>

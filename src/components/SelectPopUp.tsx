@@ -126,7 +126,7 @@ export default function SelectPopUp(props: any) {
                 </Wrapper>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={props.onHide}>select</Button>
+                <Button onClick={() => props.onHide()}>select</Button>
             </Modal.Footer>
         </Modal>
 

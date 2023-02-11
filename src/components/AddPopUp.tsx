@@ -5,6 +5,7 @@ import { Images } from '../actions/types';
 import { Axios } from '../config';
 import { uploadImage } from '../reducers/common';
 import { useAppDispatch } from '../reducers/hooks';
+import { toast } from 'react-toastify';
 
 
 const ImageHeader = styled.div`
@@ -50,8 +51,8 @@ img{
 `
 const postImage = async (image: Images) => {
   return await Axios.post('/images/add', image)
-        .then(res => console.log(res))
-        .catch(err => console.log(err,'error'))
+      .then(res => toast('Uploaded successfully'))
+        .catch(err => toast('Could not upload image' + err, {type: 'error'}))
 }
 
 export default function AddPopUp(props: any) {
@@ -66,9 +67,9 @@ export default function AddPopUp(props: any) {
     const handleSave = async (e: any) => {
         e.preventDefault()
         let img: Images = {
-            uid: image.id,
+            _id: image.id,
             createdAt: Date.now(),
-            name: description,
+            name: description ? description : image.user.username,
             description: image.alt_description,
             url: image.urls.full,
             thumbnail: image.urls.thumb,
