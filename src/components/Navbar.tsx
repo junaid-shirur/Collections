@@ -10,8 +10,8 @@ const Navbar: React.FC<any> = ({ favCount = 0 }) => {
             <Container>
                 <NavContainer.Brand href="/home">Collections</NavContainer.Brand>
                 <Nav className="me-auto">
-                    <Nav.Link active href="/home">Home</Nav.Link>
-                    <Nav.Link href="/favourites">Favourites{favCount}</Nav.Link>
+                    <Nav.Link href="/home">Home</Nav.Link>
+                    <Nav.Link href="/favourites">Favourites{`(${favCount})`}</Nav.Link>
                 </Nav>
             </Container>
             <LogoutBtn variant="outline-secondary">Logout</LogoutBtn>

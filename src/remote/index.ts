@@ -33,4 +33,4 @@ export const fetchImages = async () => await Axios.get('/images').then(res => re
 
 export const deleteImages = async (imgIds: Array<string>) => await Axios.delete('/images/delete', { data: imgIds })
 
-export const updateFavourite = async (imgIds: Array<string>, add: boolean) => await Axios.post('/images/fav', { imgIds: imgIds, add: add })
+export const updateFavourite = async (req: any) => await Axios.post('/images/fav', { imgIds: req.imgIds, add: req.add })
