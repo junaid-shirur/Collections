@@ -6,6 +6,8 @@ import { Axios } from '../config';
 import { uploadImage } from '../reducers/common';
 import { useAppDispatch } from '../reducers/hooks';
 import { toast } from 'react-toastify';
+import { useMutation } from 'react-query';
+import { uploadImg } from '../remote';
 
 
 const ImageHeader = styled.div`
@@ -49,11 +51,6 @@ img{
 }
 
 `
-const postImage = async (image: Images) => {
-  return await Axios.post('/images/add', image)
-      .then(res => toast('Uploaded successfully'))
-        .catch(err => toast('Could not upload image' + err, {type: 'error'}))
-}
 
 export default function AddPopUp(props: any) {
     const [image, setImage] = useState<any>()
@@ -62,8 +59,19 @@ export default function AddPopUp(props: any) {
     useEffect(() => {
         const image = props.data.filter((img: any) => img.id === props.id)
         setImage(image[0])
-    }, [])    
+    }, [])
     const dispatch = useAppDispatch()
+
+    const mutation = useMutation(uploadImg, {
+        onSuccess(data, variables, context) {
+            dispatch(uploadImage(variables))
+            toast('upload images successfull', { type: 'success' })
+        },
+        onError(error: any, variables, context) {
+            toast('could not upload images' + error.message, { type: 'error' })
+        },
+    })
+
     const handleSave = async (e: any) => {
         e.preventDefault()
         let img: Images = {
@@ -75,8 +83,7 @@ export default function AddPopUp(props: any) {
             thumbnail: image.urls.thumb,
             userId: 'password'
         }
-       await postImage(img)
-        dispatch(uploadImage(img))
+        mutation.mutate(img)
         props.onHide()
     }
 

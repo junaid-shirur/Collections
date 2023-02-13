@@ -1,4 +1,4 @@
-import { UserAuth } from "../actions/types"
+import { Images, UserAuth } from "../actions/types"
 import { Axios } from "../config"
 import { storeToken } from "../utils/utils"
 
@@ -34,3 +34,5 @@ export const fetchImages = async () => await Axios.get('/images').then(res => re
 export const deleteImages = async (imgIds: Array<string>) => await Axios.delete('/images/delete', { data: imgIds })
 
 export const updateFavourite = async (req: any) => await Axios.post('/images/fav', { imgIds: req.imgIds, add: req.add })
+
+export const uploadImg = async (req: Images) => await Axios.post('/images/add', req)
