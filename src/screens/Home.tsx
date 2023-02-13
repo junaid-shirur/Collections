@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Images from './Images'
 import SelectPopUp from '../components/SelectPopUp';
-import { deleteImage, filter, getImages } from '../reducers/common';
+import { deleteImage, filter, filterImages, getImages, updateFavImages } from '../reducers/common';
 import styled from '@emotion/styled'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Wrapper, SearchBar, SortingButtons } from '../components/Header';
@@ -17,6 +17,7 @@ import { useLocation } from 'react-router-dom';
 import Config from '../config'
 import deleteIcon from '../assets/delete_icon.png'
 import favIcon from '../assets/fav_icon.png'
+import { Flex } from 'rebass';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
   let stateImgs = location == discover ? state.Images : state.favourites
   const { data, status, error } = useQuery('getImages', { queryFn: fetchImages, enabled: !!stateImgs.length == 0 })
 
+  const isHomeRoute = location == discover 
   useEffect(() => {
     console.log(data);
     if (status == 'success' && stateImgs.length == 0)
@@ -67,54 +69,9 @@ function App() {
     }
    
   `
-  const filterImages = (filterBy: string) => {
-    var imageList: any = Object.assign([], state)
-
-    if (filterBy === 'title') {
-      imageList.sort((a: any, b: any) => {
-        if (a.user.name.toLowerCase() < b.user.name.toLowerCase()) {
-          return -1
-        }
-        if (a.user.name.toLowerCase() > b.user.name.toLowerCase()) {
-          return 1
-        }
-        return 0
-      })
-    }
-    else if (filterBy === 'date') {
-
-      imageList.sort((a: any, b: any) => {
-
-        if (a.created_at < b.created_at) {
-          return -1
-        }
-        if (a.created_at > b.created_at) {
-          return 1
-        }
-        return 0
-      })
-    }
-    else {
-
-      imageList.sort((a: any, b: any) => {
-
-        if (a.height * a.width < b.height * a.width) {
-          return -1
-        }
-        if (a.height * a.width > b.height * a.width) {
-          return 1
-        }
-        return 0
-      })
-    }
-
-    dispatch(filter(imageList))
-  }
-
-  const [searchText, setSearchText] = useState()
 
   const [selectedDelete, setSelectedDelete] = useState<any>([]);
-  const [selectAll, setselectAll] = useState<any>(false);
+  const [selectAll, setselectAll] = useState<boolean>(false);
 
   const onSelectAll = (e) => {
     e.preventDefault()
@@ -131,6 +88,7 @@ function App() {
     onSuccess(data, variables, context) {
       toast('delete images successfull', { type: 'success' })
       dispatch(deleteImage(selectedDelete))
+      setSelectedDelete([])
     },
     onError(error: any, variables, context) {
       toast('could not delete images' + error.message, { type: 'error' })
@@ -141,8 +99,9 @@ function App() {
     onSuccess(data, variables, context) {
       console.log(data, variables, context);
       const msg = !variables.add ? 'successFully removed from favourite' : 'added to favourite successfull'
+      dispatch(updateFavImages({ imgIds: selectedDelete, add: variables.add }))
       toast(msg, { type: 'success' })
-      // dispatch(deleteImage(selectedDelete))
+      setSelectedDelete([])
     },
     onError(error: any, variables, context) {
       toast('could not add to favourite' + error.message, { type: 'error' })
@@ -150,16 +109,15 @@ function App() {
   })
 
   const selectedImgs = Object.keys(selectedDelete).map(e => selectedDelete[e])
+
   const handleDelete = (e) => mutation.mutate(selectedImgs)
   const handleFav = () => favMutation.mutate({ imgIds: selectedImgs, add: location != favourites ? true : false })
   const DynamicDisable = () => {
-
     for (let item in selectedDelete) {
       return !selectedDelete[item]
     }
     return true
   }
-
   return (
 
     <div style={{ backgroundColor: "#F5F5F5" }} >
@@ -179,8 +137,8 @@ function App() {
           <label htmlFor='selectAllInput'>
             select All{" "}
             <input id='selectAllInput' onChange={onSelectAll} checked={selectAll} type="checkbox" />{" "}
-            {location != favourites && <button className="btn" disabled={DynamicDisable()} onClick={handleDelete}><img src={deleteIcon}/></button>}
-             <button className="btn" disabled={DynamicDisable()} onClick={handleFav}><img src={location != favourites ? favIcon : deleteIcon}/></button>
+            {isHomeRoute && <button className="btn" disabled={DynamicDisable()} onClick={handleDelete}><img src={deleteIcon}/></button>}
+             <button className="btn" disabled={DynamicDisable()} onClick={handleFav}><img src={isHomeRoute ? favIcon : deleteIcon}/></button>
           </label>
           {/* <input type="text" value={searchText} placeholder="search..." onChange={handleChange} /> */}
         </SearchBar>
@@ -188,9 +146,9 @@ function App() {
           <div>
             sort by :{" "}
           </div>
-          <button className="btn" onClick={() => filterImages('title')}>Title</button>
-          <button className="btn" onClick={() => filterImages('date')}>date</button>
-          <button className="btn" onClick={() => filterImages('size')}>size</button>
+          <button className="btn" onClick={() => dispatch(filterImages({ page: isHomeRoute ? 'home' : 'favs', filterBy: 'title' }))}>Title</button>
+          <button className="btn" onClick={() => dispatch(filterImages({ page: isHomeRoute ? 'home' : 'favs', filterBy: 'date' }))}>date</button>
+          <button className="btn" onClick={() => dispatch(filterImages({ page: isHomeRoute ? 'home' : 'favs', filterBy: 'size' }))}>size</button>
         </SortingButtons>
 
       </Wrapper>
@@ -200,6 +158,7 @@ function App() {
         onHide={() => setModalShow(false)}
       />
 
+        {stateImgs.length !== 0 ?
         <Images
           images={stateImgs}
           isLoading={status == 'loading'}
@@ -207,7 +166,7 @@ function App() {
           selectAll={selectAll}
           setSelectedDelete={setSelectedDelete}
           location={location}
-        />
+        /> : <Flex>{isHomeRoute ? 'Add image and start preserving your favourite images' : 'Theres no favroutie images'}</Flex>}
     </div>
   );
 }

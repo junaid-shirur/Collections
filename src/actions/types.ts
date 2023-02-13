@@ -22,5 +22,5 @@ export type Images = UserId & {
     description: string
     name: string
     createdAt: number
-    favourite?: string
+    favourite?: boolean
 }

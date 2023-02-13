@@ -19,25 +19,17 @@ import { createRemoteRequest } from './remote';
 import ProtectedRoute from './components/protectedRoute';
 import { HTTPMethods } from './remote/types';
 import Home from './screens/Home';
+
 function App(props: any) {
   const { discover, favourites } = Config.reader.routes
   const { login, register } = Config.auth.routes
   console.log(useLocation().pathname);
 
-  // useEffect(() => {
-  //   const ab = async () => await fetch('http://localhost:4000/api/users', {
-  //     method: 'GET',
-  //     mode: 'cors',
-  //     credentials: 'include',
-  //   })
-  //   console.log(ab().then(e => console.log(e.json())))
-  // }, [])
-
   return (
     <>
       <ProtectedRoute>
         <Routes>
-          <Route path="*" element={<Navigate to={login} />} />
+          <Route path="*" element={<Navigate to={discover} />} />
           <Route path={login} element={<Login  />} />
           <Route path={register} element={<Login />} />
           <Route path={discover} element={<Home />} />

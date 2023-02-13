@@ -21,7 +21,7 @@ const Images: React.FC<any> = ({ selectedDelete, setSelectedDelete, images, isLo
             <Checkbox
               type="checkbox"
               id={img._id}
-              checked={ selectedDelete[img._id] ? true : false}
+              checked={selectedDelete[img._id] ? true : false}
               onChange={(e: any) => {
                 setSelectedDelete({ ...selectedDelete, [img._id]: !selectedDelete?.[img._id] ? img._id : null })
               }}
