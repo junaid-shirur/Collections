@@ -5,7 +5,7 @@ import SelectPopUp from '../components/SelectPopUp';
 import { deleteImage, filter, filterImages, getImages, updateFavImages } from '../reducers/common';
 import styled from '@emotion/styled'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Wrapper, SearchBar, SortingButtons } from '../components/Header';
+import { Wrapper, SearchBar, SortingButtons, Container } from '../components/Header';
 import { useAppDispatch, useAppSelector } from '../reducers/hooks';
 import { Axios } from '../config';
 import { Images as Img } from '../actions/types';
@@ -18,6 +18,8 @@ import Config from '../config'
 import deleteIcon from '../assets/delete_icon.png'
 import favIcon from '../assets/fav_icon.png'
 import { Flex } from 'rebass';
+import EmptyState from '../components/EmptyState';
+import { Button } from 'react-bootstrap';
 
 function App() {
 
@@ -33,7 +35,6 @@ function App() {
 
   const isHomeRoute = location == discover 
   useEffect(() => {
-    console.log(data);
     if (status == 'success' && stateImgs.length == 0)
       dispatch(getImages(data))
 
@@ -41,34 +42,6 @@ function App() {
       toast('Something went wrong', { type: 'error' })
   }, [data])
   
-
-  const Container = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    margin: auto;
-    align-items: center;
-    h4{
-      font-family: 'Times New Roman', Times, serif;
-    }
-    span{
-      color: grey;
-      font-size: small;
-    }
-    button{
-      background-color: #24a0ed ;
-      border: none;
-      border-radius: 9px;
-      cursor: pointer;
-      font-weight: 200;
-      color: white;
-      border: 1px solid;
-      &:hover{
-            border: 1px solid;
-        };
-    }
-   
-  `
 
   const [selectedDelete, setSelectedDelete] = useState<any>([]);
   const [selectAll, setselectAll] = useState<boolean>(false);
@@ -128,7 +101,7 @@ function App() {
           <span>Create,Edit and manage the media on your community</span>
         </div>
         {/* ToDo: remove inline styles */}
-        {location != favourites && <button style={{ fontWeight: 500 }} className="btn" onClick={() => setModalShow(true)}>Add Image</button>}
+        {location != favourites && <Button variant='primary' className="btn" onClick={() => setModalShow(true)}>Add Image</Button>}
       </Container>
 
       <Wrapper>
@@ -158,7 +131,7 @@ function App() {
         onHide={() => setModalShow(false)}
       />
 
-        {stateImgs.length !== 0 ?
+      {stateImgs.length !== 0 ?
         <Images
           images={stateImgs}
           isLoading={status == 'loading'}
@@ -166,7 +139,11 @@ function App() {
           selectAll={selectAll}
           setSelectedDelete={setSelectedDelete}
           location={location}
-        /> : <Flex>{isHomeRoute ? 'Add image and start preserving your favourite images' : 'Theres no favroutie images'}</Flex>}
+        /> :
+        <EmptyState
+          msg="Add Images to your collection"
+          onclick={() => setModalShow(true)}
+        />}
     </div>
   );
 }

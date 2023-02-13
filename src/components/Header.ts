@@ -74,3 +74,18 @@ export const SortingButtons = styled.div`
     }
 `
 
+export const Container = styled.div`
+display: flex;
+justify-content: space-between;
+padding: 10px;
+margin: auto;
+align-items: center;
+h4{
+  font-family: 'Times New Roman', Times, serif;
+}
+span{
+  color: grey;
+  font-size: small;
+}
+
+`
