@@ -126,10 +126,10 @@ function App() {
 
       </Wrapper>
 
-      <SelectPopUp
+      {modalShow && <SelectPopUp
         show={modalShow}
         onHide={() => setModalShow(false)}
-      />
+      />}
 
       {stateImgs.length !== 0 ?
         <Images
